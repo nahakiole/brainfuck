@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brainfuck</title>
+    <script src="Interpreter.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+</head>
+<body>
+<div class="jumbotron">
+    <div class="container">
+        <h1>Brainfuck Interpreter</h1>
+
+    </div>
+</div>
+<div class="container ">
+    <div class="row">
+        <div class="col-md-6">
+            <label for="code">Code</label>
+            <textarea class="form-control" name="code" id="code" cols="30" rows="16">++++++++++
+[
+>+++++++>++++++++++>+++>+<<<<-
+]                       Schleife zur Vorbereitung der Textausgabe
+>++.                    Ausgabe von 'H'
+>+.                     Ausgabe von 'e'
++++++++.                'l'
+.                       'l'
++++.                    'o'
+>++.                    Leerzeichen
+<<+++++++++++++++.      'W'
+>.                      'o'
++++.                    'r'
+------.                 'l'
+--------.               'd'
+>+.                     '!'
+>.                      Zeilenvorschub
++++.                    Wagenrücklauf
+            </textarea> <br>
+            <label for="code">Examples</label>
+            <select name="examples" id="examples" class="form-control" onchange="updateCode()">
+                <option value="hello">hello</option>
+                <option value="fibonacci">fibonacci</option>
+                <option value="square">square</option>
+                <option value="lowercase">lowercase</option>
+            </select>
+            <br>
+        </div>
+        <div class="col-md-6">
+            <label for="output">Output</label>
+            <textarea class="form-control" name="output" id="output" cols="30" rows="20"></textarea><br></div>
+        <div class="col-md-12">
+            <button id=run onclick="run()" class="btn btn-primary btn-lg">Run Code</button>
+        </div>
+    </div>
+</div>
+<script>
+    var output = document.getElementById('output');
+
+    var interpreter = new Interpreter({
+        write: function (char) {
+            output.value = output.value + char;
+        }
+    }, {
+        read: function () {
+            var input = prompt('input');
+            if (input){
+                output.value = output.value + input;
+            }
+            return input;
+        }
+    });
+
+
+
+
+    function updateCode(){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+                document.getElementById('code').value = xhttp.responseText;
+            }
+        };
+        xhttp.open("GET", document.getElementById('examples').value, true);
+        xhttp.send();
+    }
+
+    function run() {
+        document.getElementById('output').value = '';
+        interpreter.interpret(document.getElementById('code').value);
+    }
+</script>
